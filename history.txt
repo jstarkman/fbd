@@ -1,0 +1,23 @@
+20 may
+beginning
+project reqs
+can read in the data (sort of)
+
+21 may
+more mechanics
+some pictures
+
+22 may
+cleaning up
+added blocks that work
+added arrows
+made arrows work (sort of)
+made a crude interface (for force type)
+made a right/wrong checker for arrows that works when it wants to
+geometry (eg, given a line segment's two endpts, draw an arrowhead)
+
+23 may
+finished the important parts
+interface to select a map
+new tag (TEXT)
+fbd_v1 is done! at 13:00, 25hrs gone, 25 to go

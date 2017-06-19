@@ -1,0 +1,29 @@
+options - because a real interface is messier
+Options are loaded when program is run.  Exit and re-run to see changes take effect.
+defaults are in () in comment after the tag
+
+not in use
+[SIZE:640:480] ratio is constant, but can be scaled up or down.
+
+in use
+[COLORS:ARROW:SCENERY:INTERFACE] list the types here
+
+	[ARROW:NEW:255:255:0]freshly draw arrows (yellow)
+	[ARROW:SET:128:0:128] once type is picked (purple)
+	[ARROW:RIGHT:0:255:0] bad arrow (red)
+	[ARROW:WRONG:255:0:0] good arrow (green)
+	[SCENERY:MAP:255:255:255] tables, ramps, &c (white)
+	[SCENERY:ROPE:128:64:0]
+	[SCENERY:BACKGROUND:0:0:0]
+	[INTERFACE:TEXT:255:255:255] (white)
+	[INTERFACE:BORDERS:255:128:0] of the words (orange)
+	[INTERFACE:CHECKMARK:0:255:0] upper-right corner (green)
+[/COLORS] this makes interpretting easier
+
+Put the keybinding directly after the force name.
+not in use
+[POTENTIAL_FORCE_TYPES:frictional:f:gravitational:g:normal:o:natural:a:tensional:t:personal:p:inertial:i]
+
+in use
+[TOLERANCE:10] degrees off each side tolerated, resulting in a (20) deg arc
+

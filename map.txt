@@ -1,0 +1,22 @@
+[
+	'ATWOOD', 
+	['parts', 
+		['PULLEY', '320', '100', '30']
+	], 
+	
+	['blocks', 
+		[], 
+		[
+			['SIZE', '30', '9'], 
+			['FORCE', 'gravitational', '270'], 
+			['FORCE', 'tensional', '90'], 
+			['POS', '290', '240', '0']
+		], 
+		[
+			['SIZE', '50', '25'], 
+			['FORCE', 'gravitational', '270'], 
+			['FORCE', 'tensional', '90'], 
+			['POS', '350', '240', '0']
+		]
+	]
+]
