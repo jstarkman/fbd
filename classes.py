@@ -1,7 +1,6 @@
 import read, math, pygame
 pygame.init()
 pygame.font.init()
-#screen.blit(writing.render("", True, color), (x,y))
 
 class General(object):
 	"""Should probably be called the God class, for it's omniscience.  If not benevolence.""" 
@@ -9,18 +8,16 @@ class General(object):
 		self.mode = "start"
 		self.data = read.read("data.txt")
 		self.options = read.read("options.txt")
-		self.mapchoice = 0
 		self.map = []
 		self.width = 640
 		self.height = 480
-		self.center = (self.width/2, self.height/2)
 		self.screen = pygame.display.set_mode((self.width, self.height))
 		self.blocklist = []
 		self.arrowlist = []
 		self.in_a_click = False
 		self.wr = pygame.font.Font(None, 32)
 		self.raws_write = pygame.font.Font(None, 24)
-		self.force_types = ["frictional","gravitational","normal","natural","tensional","personal","inertial"]
+		self.force_types = self.options["forces"]
 		self.force_types_space = []
 		self.force_types_space_filled = False
 		self.tolerance = self.options["tolerance"]#10 degrees
@@ -32,39 +29,40 @@ class General(object):
 		self.do_buttons_once = False
 		self.white = self.options["color"]["SCENERY"]["MAP"]
 		self.black = self.options["color"]["SCENERY"]["BACKGROUND"]
-		
+		self.keylist = [[pygame.K_a, "a"],[pygame.K_b, "b"],[pygame.K_c, "c"],[pygame.K_d, "d"],[pygame.K_e, "e"],[pygame.K_f, "f"],[pygame.K_g, "g"],[pygame.K_h, "h"],[pygame.K_i, "i"],[pygame.K_j, "j"],[pygame.K_k, "k"],[pygame.K_l, "l"],[pygame.K_m, "m"],[pygame.K_n, "n"],[pygame.K_o, "o"],[pygame.K_p, "p"],[pygame.K_q, "q"],[pygame.K_r, "r"],[pygame.K_s, "s"],[pygame.K_t, "t"],[pygame.K_u, "u"],[pygame.K_v, "v"],[pygame.K_w, "w"],[pygame.K_x, "x"],[pygame.K_y, "y"],[pygame.K_z, "z"],]
+
 	def reset(self):
 		self.mode = "start"
-		self.mapchoice = 0
 		self.map = []
 		self.width = 640
 		self.height = 480
-		self.center = (self.width/2, self.height/2)
-		self.screen = pygame.display.set_mode((self.width, self.height))
 		self.blocklist = []
 		self.arrowlist = []
 		self.in_a_click = False
-		self.force_types = ["frictional","gravitational","normal","natural","tensional","personal","inertial"]
-		self.force_types_space = []
-		self.force_types_space_filled = False
-		self.tolerance = self.options["tolerance"]#10 degrees
 		self.time_bomb = 0
 		self.blocks_finished = 0
 		self.win = False
 		self.interfacing_now = False
 		self.home_buttons = []
 		self.do_buttons_once = False
-	
+
+	def label_arrow(self, receipt):
+		try:
+			print(receipt, "at an angle of", round(math.degrees(self.arrowlist[-1].angle), 1))
+			self.arrowlist[-1].type = receipt
+			self.arrowlist[-1].color = self.options["color"]["ARROW"]["SET"]
+		except IndexError: pass
+
 	def interface(self, clickpt):
 		for trio in self.force_types_space:
 			if clickpt[0] > trio[0][0] and clickpt[0] < trio[1][0]:
 				if clickpt[1] > trio[0][1] and clickpt[1] < trio[1][1]:
 					return trio[2]
-	
+
 	def check(self):
 		#each block has blockname.forces = [(angle, name),(angle, name) ...]
 		# print("arrowlist ",len(self.arrowlist), "\n\n")
-		
+		any_bad_arrows = False
 		for arrow in self.arrowlist:
 			# print("named",arrow.type)
 			for block in self.blocklist:
@@ -86,6 +84,7 @@ class General(object):
 			if arrow.good == True:
 				arrow.color = self.options["color"]["ARROW"]["RIGHT"]
 			else:
+				any_bad_arrows = True
 				arrow.color = self.options["color"]["ARROW"]["WRONG"]
 
 		self.blocks_finished = 0
@@ -94,8 +93,12 @@ class General(object):
 			if block.force_qty == block.arrow_qty:
 				self.blocks_finished +=1
 			if self.blocks_finished == len(self.blocklist):
-				self.win = True
-		self.time_bomb = 30
+				you_win = True
+		self.time_bomb = 45
+		if any_bad_arrows:
+			you_win = False
+		if you_win:
+			self.win = True
 
 	def draw_words(self, text, pos):
 		self.screen.blit(self.wr.render(text, True, self.white), pos)
@@ -199,7 +202,7 @@ class General(object):
 				self.draw_rope(i[1:])
 			elif i[0] == "TEXT":
 				self.draw_words_raws(i[1:])
-			
+
 	def draw_words_raws(self, data):
 		#data is [text, x,y,R,G,B]
 		j = 1
@@ -227,10 +230,10 @@ class General(object):
 		for map in self.data:
 			big = self.wr.size(map[0])
 			rect = ((x-5,y-5), (big[0]+10, big[1]+10))
-			pygame.draw.rect(self.screen, (128,0,0), rect, 0)
+			pygame.draw.rect(self.screen, self.options["color"]["INTERFACE"]["INTRO_BUTTON_BKGD"], rect, 0)
 			self.draw_words(map[0], (x,y))
 			if y+40 > self.height:
-				y = 50
+				y = 40
 				x = 10 + (self.width/2)
 			else:
 				y+=40
@@ -253,7 +256,7 @@ class Block(object):
 		self.arrow_qty = 0
 		self.pointlist = []
 		self.finished = False
-		
+
 		for i in data: #eg [size, 50, 25]
 			if i[0] == "SIZE":
 				self.sidelength = int(i[1])
@@ -266,22 +269,29 @@ class Block(object):
 				self.tilt = int(i[3])
 			elif i[0] == "COLOR":
 				self.color = (int(i[1]), int(i[2]), int(i[3]))
-		
 		self.force_qty = len(self.forces)
-		#pointlist - dx&y were calculated for one corner.  Law of cosines.
-		dy=0; dx=0; theta=0;
+
+		half = int(self.sidelength/2)
+		self.pointlist_orig = [(self.x+half,self.y-half), (self.x+half,self.y+half), (self.x-half,self.y+half), (self.x-half,self.y-half)]
 		if self.tilt != 0:
-			theta = math.cos(math.radians(self.tilt))
-			dx = int(self.sidelength * theta * math.sqrt(1-theta))
-			dy = int(self.sidelength * math.sin(math.radians(self.tilt)) * math.sqrt(1-theta))
-		halfa = int(self.sidelength/2)
-		self.pointlist = [(self.x+halfa-dx,self.y-halfa-dy), (self.x+halfa+dy,self.y+halfa-dx), (self.x-halfa+dx,self.y+halfa+dy), (self.x-halfa-dy,self.y-halfa+dx)]
+			theta = -1 * math.radians(self.tilt)
+			for i in self.pointlist_orig:
+				x,y = i; 
+				x -= self.x; y -= self.y; temp = []
+				x_hold = int((x*math.cos(theta)) - (y*math.sin(theta)))
+				y_hold =  int((x*math.sin(theta)) + (y*math.cos(theta))) 
+				x_hold += self.x; y_hold += self.y
+				temp.append(x_hold)
+				temp.append(y_hold)
+				self.pointlist.append(temp)
+		else:
+			self.pointlist = self.pointlist_orig
 
 class Arrow(object):
 	"""Make many of these Arrows, and store the resulting objects in General's arrowlist"""
 	def __init__(self, surface, startpos):
 		self.start = startpos
-		self.end = (1,1)
+		self.end = startpos #will be modified later
 		self.angle = 0
 		self.headpts = []
 		self.color = (0,0,0)

@@ -1,11 +1,18 @@
 Free Body Diagram practice program
 
+
 /*
- * THIS COPY MADE ON 2013-05-23, AND PRESRVED AS HISTORY.  
- * Named v1.1 because v1.0 was when it finally worked, at the 25hr mark.  
- * Size estimate: 17kb of code, 7kb of other (e.g., data, options, this file, etc).
+ * THIS COPY MADE ON 2013-05-28 AND PRESRVED AS HISTORY.  
+ * Notes on this version:
+ * - It works.
+ * - It exists mostly as a backup.
+ * - Numerous bugs are dead, including: bad rotations; strange initial arrow, bad win condition
+ * - Options is more used, with new keybindings and force types
+ *
+ * Size estimate: 18kb of code, 7kb of other (e.g., data, options, this file, etc).
  * Actual amount typed is more, due to deletion.
  */
+
 
 Notes on drawing:
 	Computers number pixels like cells in Excel (R) - positive on the x-axis is right, while positive on the y is down.

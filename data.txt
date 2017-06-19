@@ -1,5 +1,8 @@
 raw data
-capitalise all tag names (e.g. TABLE), no force types (e.g., normal), and whatever on direct quotes (e.g., Flat)
+capitalise all tag names (e.g. TABLE), no force types (e.g. normal), and whatever on direct quotes (e.g. Flat)
+
+[MAP:Random]
+	[RANDOM]
 
 [MAP:Flat]
 	[TABLE:0:240:640:240]
@@ -13,24 +16,24 @@ capitalise all tag names (e.g. TABLE), no force types (e.g., normal), and whatev
 	
 [MAP:Sloped plane]
 	[RAMP_R:30:640:55]
-	[TEXT:30 deg.:3:440:128:128:128]
+	[TEXT:30 degrees:3:440:128:128:128]
 	[BLOCK]
 		[SIZE:30:9]
 		[FORCE:gravitational:270]
 		[FORCE:normal:120]
 		[FORCE:frictional:30]
 		[POS:320:222:30]
-		[COLOR:0:255:0]	
+		[COLOR:0:255:0]
 
-[MAP:New ramp demo]
+[MAP:Other sloped ramp]
 	[RAMP_L:330:0:55]
 	[TEXT:330 deg.:500:440:128:128:128]
 	[BLOCK]
 		[SIZE:30:9]
 		[FORCE:gravitational:270]
-		[FORCE:normal:75]
-		[FORCE:frictional:330]
-		[POS:320:222:60]
+		[FORCE:normal:60]
+		[FORCE:frictional:150]
+		[POS:320:222:330]
 		[COLOR:0:255:0]	
 
 [MAP:Atwood's machine]
@@ -56,7 +59,7 @@ capitalise all tag names (e.g. TABLE), no force types (e.g., normal), and whatev
 	[RAMP_R:15:480:240]
 	[TEXT:15 deg.:0:400:128:128:128] not calc
 	[ROPE:510:335:510:240]
-	[ROPE:337:265:470:230] not calculated
+	[ROPE:337:265:470:213] not calculated
 	[PULLEY:480:240:30]
 	
 	[BLOCK]
@@ -104,8 +107,29 @@ capitalise all tag names (e.g. TABLE), no force types (e.g., normal), and whatev
 	[ROPE:160:210:480:210]
 	[ROPE:510:240:510:360]
 
+[MAP:Back-to-back ramps]
+	[RAMP_R:60:320:240]
+	[RAMP_L:345:320:240]
+	[ROPE:200:400:290:240:320:210:500:275]
+	[PULLEY:320:240:30]
 
+	[BLOCK]
+		[SIZE:50:25]
+		[FORCE:gravitational:270]
+		[FORCE:normal:150]
+		[FORCE:frictional:60]
+		[FORCE:tensional:60]
+		[POS:200:400:60]
+		[COLOR:0:0:255]
 
+	[BLOCK]
+		[SIZE:30:9]
+		[FORCE:gravitational:270]
+		[FORCE:normal:75]
+		[FORCE:frictional:345]
+		[FORCE:tensional:165]
+		[POS:500:275:75]
+		[COLOR:0:255:0]
 
 
 please follow the correct syntax

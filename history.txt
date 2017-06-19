@@ -20,4 +20,10 @@ geometry (eg, given a line segment's two endpts, draw an arrowhead)
 finished the important parts
 interface to select a map
 new tag (TEXT)
+right/wrong checker works properly now (mostly)
 fbd_v1 is done! at 13:00, 25hrs gone, 25 to go
+
+28 may
+added a Random button
+fixed the issue with rotation
+new map (back-to-back ramps)

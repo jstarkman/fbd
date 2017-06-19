@@ -1,5 +1,5 @@
 #FBDs
-import pygame, sys, math, classes
+import pygame, sys, math, classes, random
 pygame.init()
 
 g = classes.General() #warning, large amount of __init__ to do
@@ -40,21 +40,18 @@ def I(events):
 					if event.pos[0] > 600:
 						g.check()
 					else:
-						receipt = g.interface(event.pos)
-						try:
-							print(receipt, "at an angle of", round(math.degrees(g.arrowlist[-1].angle), 1))
-							g.arrowlist[-1].type = receipt
-							g.arrowlist[-1].color = g.options["color"]["ARROW"]["SET"]
-						except IndexError: pass
+						g.label_arrow(g.interface(event.pos))
 			elif g.mode == "start":
 				x,y = event.pos
 				for button in g.home_buttons:
 					if x > button[0][0] and x < button[1][0]:
 						if y > button[0][1] and y < button[1][1]:
 							#clicked it
-							for i in g.data: 
-								if i[0] == button[2]: 
-									g.map = i; break;
+							for i in g.data:
+								if i[0] == button[2]:
+									if i[0] == "Random": g.map = random.choice(g.data[1:])
+									else: g.map = i
+									break
 							g.mode = "mech"
 							#inst blocks from their class
 							block_data = g.blockify()
@@ -76,8 +73,10 @@ def I(events):
 			elif event.key == pygame.K_RETURN:
 				g.check()
 			else: #letter pressed
-				pass
-				#if event.key == pygame.K_g:
+				for i in g.keylist:
+					if event.key == i[0]:
+						try: g.label_arrow(g.options["PFT"][i[1]])
+						except KeyError: pass
 
 
 
@@ -102,6 +101,7 @@ def main():
 				if g.win == False:
 					for arrow in g.arrowlist:
 						if arrow.good == False:
+							#find it and kill it
 							del g.arrowlist[g.arrowlist.index(arrow)]
 							print("Bad!")
 				else:

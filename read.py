@@ -65,7 +65,7 @@ def interpret_map(places, contents):
 			#start this map
 			each_map.append(i[1])
 			this_map = True
-		elif i[0] == "RAMP_R" or i[0] == "TABLE" or i[0] == "PULLEY" or i[0] == "ROPE" or i[0] == "TEXT" or i[0] == "RAMP_L":
+		elif i[0] == "RAMP_R" or i[0] == "TABLE" or i[0] == "PULLEY" or i[0] == "ROPE" or i[0] == "TEXT" or i[0] == "RAMP_L" or i[0] == "RANDOM":
 			parts.append(i)
 		
 		else: #block, of some form
@@ -97,7 +97,7 @@ def interpret_map(places, contents):
 def interpret_opt(places, contents):
 	output = {}
 	# print(places)
-	in_color = 0; out_color = 0; i = 0; types = []
+	in_color = 0; out_color = 0; i = 0; types = []; in_PFT = 0; out_PFT = 0; F_types = []
 	for term in places:
 		if term[0] == "SIZE":
 			output["size"] = (int(term[1]), int(term[2]))
@@ -108,7 +108,11 @@ def interpret_opt(places, contents):
 		elif term[0] == "/COLORS":
 			out_color = i
 		elif term[0] == "POTENTIAL_FORCE_TYPES":
-			output["force types"] = term[1:]
+			output["forces"] = term[1:]
+		elif term[0] == "KEYBINDINGS":
+			in_PFT = i
+		elif term[0] == "/KEYBINDINGS":
+			out_PFT = i
 		elif term[0] == "TOLERANCE":
 			output["tolerance"] = int(term[1])
 		else:
@@ -122,6 +126,12 @@ def interpret_opt(places, contents):
 			if term[0] == type:
 				output["color"][type][term[1]] = (int(term[2]), int(term[3]), int(term[4]))
 		
+	output["PFT"] = {}
+	#output["PFT"]["g"] = "gravitational"
+	for term in places[in_PFT+1:out_PFT]:
+		output["PFT"][term[0]] = term[1]
+
+	
 	# print("options output", output)
 	return output
 
