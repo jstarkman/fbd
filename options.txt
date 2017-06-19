@@ -5,34 +5,37 @@ defaults are in () in comment after the tag
 (SIZE:640:480) ratio is constant, but can NOT be scaled up or down.
 
 [COLORS:ARROW:SCENERY:INTERFACE] list the types here
-
+	format - main type:subtype:R:G:B
+	do not introduce new tags.  They will not be used.
 	[ARROW:NEW:255:255:0]freshly draw arrows (yellow)
 	[ARROW:SET:128:0:128] once type is picked (purple)
 	[ARROW:RIGHT:0:255:0] bad arrow (red)
 	[ARROW:WRONG:255:0:0] good arrow (green)
 	[SCENERY:MAP:255:255:255] tables, ramps, &c (white)
-	[SCENERY:ROPE:128:64:0]
-	[SCENERY:BACKGROUND:0:0:0]
+	[SCENERY:ROPE:128:64:0] (brown)
+	[SCENERY:BACKGROUND:0:0:0] (black)
 	[INTERFACE:TEXT:255:255:255] (white)
 	[INTERFACE:BORDERS:255:128:0] of the words (orange)
 	[INTERFACE:CHECKMARK:0:255:0] upper-right corner (green)
 	[INTERFACE:INTRO_BUTTON_BKGD:128:0:0] (burgundy, 128-0-0)
-[/COLORS] this makes interpretting easier
+	[INTERFACE:POPUP_BKGD:255:0:255] (fuchsia)
+	[INTERFACE:POPUP_TEXT:0:128:0] (dark green)
 
+[/COLORS] this makes interpreting easier
 
+list them
 [POTENTIAL_FORCE_TYPES:frictional:gravitational:normal:natural:tensional:personal:inertial]
 
 format - keybinding:forcename
-[KEYBINDINGS]
+[KEYBINDINGS] all 26 letters are valid.  lowercase only
 	[f:frictional]
 	[g:gravitational]
-	[o:normal]
+	[n:normal]
 	[a:natural]
 	[t:tensional]
 	[p:personal]
 	[i:inertial]
 [/KEYBINDINGS]
 
-[TOLERANCE:10] degrees off each side tolerated, resulting in a (20) deg arc
-[TIMER:45] number of frames to wait.  30 fps.  timer:45 means 1 1/2 sec.
-
+[TOLERANCE:10] (10) degrees off each side tolerated, resulting in a (20) deg arc
+[TIMER:45] number of frames to wait.  30 fps.  timer:(45) means 1 1/2 sec.

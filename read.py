@@ -36,64 +36,8 @@ def seek(data):
 	#print(output_str)
 	#everything, in order present, broken from tags to tuples
 	
-
 	return output_str
 
-def interpret_map(places, contents):
-	output = []
-	each_map = []
-	this_block_attr = []
-	parts = ["parts"]
-	blocks = ["blocks"]
-	this_map = False
-	this_block = False
-	for i in places:
-		if i[0] == "MAP" and this_map == True:
-			#end of this map - went too far
-			this_map = False
-			each_map.append(parts)
-			blocks.append(this_block_attr)
-			each_map.append(blocks)
-			output.append(each_map)
-			
-			each_map = []
-			this_block_attr = []
-			parts = ["parts"]
-			blocks = ["blocks"]
-
-		if i[0] == "MAP" and this_map == False:
-			#start this map
-			each_map.append(i[1])
-			this_map = True
-		elif i[0] == "RAMP_R" or i[0] == "TABLE" or i[0] == "PULLEY" or i[0] == "ROPE" or i[0] == "TEXT" or i[0] == "RAMP_L" or i[0] == "RANDOM":
-			parts.append(i)
-		
-		else: #block, of some form
-			if i[0] == "BLOCK" and this_block == True:
-				#too far - same logic as maps
-				this_block = False
-				blocks.append(this_block_attr)
-				this_block_attr = []
-				
-			if i[0] == "BLOCK" and this_block == False:
-				#is a block, need the attributes
-				this_block = True
-			elif i[0]=="SIZE" or i[0]=="FORCE" or i[0]=="POS" or i[0]=="COLOR":
-				this_block_attr.append(i)
-	
-	each_map.append(parts)
-	blocks.append(this_block_attr)
-	each_map.append(blocks)
-	output.append(each_map)
-	
-	each_map = []
-	this_block_attr = []
-	parts = ["parts"]
-	blocks = ["blocks"]
-	
-	# print("data otuput",output,"\n\n")
-	return output
-	
 def interpret_opt(places, contents):
 	output = {}
 	# print(places)
@@ -115,6 +59,8 @@ def interpret_opt(places, contents):
 			out_PFT = i
 		elif term[0] == "TOLERANCE":
 			output["tolerance"] = int(term[1])
+		elif term[0] == "TIMER":
+			output["timer"] = int(term[1])
 		else:
 			pass
 		i+=1
@@ -144,7 +90,7 @@ def read(filename):
 	all_the_raws = []
 	#separated for efficiency/speed in file processing
 	if filename == "data.txt":
-		all_the_raws = interpret_map(tag_break, contents)
+		all_the_raws = tag_break
 	elif filename == "options.txt":
 		all_the_raws = interpret_opt(tag_break, contents)
 	return all_the_raws

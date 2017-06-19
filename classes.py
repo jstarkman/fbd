@@ -8,15 +8,19 @@ class General(object):
 		self.mode = "start"
 		self.data = read.read("data.txt")
 		self.options = read.read("options.txt")
-		self.map = []
+		self.map = 0 #where in maplist it is (index #)
 		self.width = 640
 		self.height = 480
 		self.screen = pygame.display.set_mode((self.width, self.height))
-		self.blocklist = []
 		self.arrowlist = []
-		self.in_a_click = False
+		self.blocklist = []
+		self.maplist = []
+		self.furnishings = ["TABLE", "RAMP_R", "RAMP_L", "PULLEY", "ROPE", "TEXT", "RANDOM"]
+		self.valid_block_tags = ["SIZE","FORCE","POS","COLOR"]
 		self.wr = pygame.font.Font(None, 32)
 		self.raws_write = pygame.font.Font(None, 24)
+		self.message = 0
+		self.in_a_click = False
 		self.force_types = self.options["forces"]
 		self.force_types_space = []
 		self.force_types_space_filled = False
@@ -24,21 +28,23 @@ class General(object):
 		self.time_bomb = 0
 		self.blocks_finished = 0
 		self.win = False
+		self.no_win_yet = ""
 		self.interfacing_now = False
 		self.home_buttons = []
 		self.do_buttons_once = False
 		self.white = self.options["color"]["SCENERY"]["MAP"]
 		self.black = self.options["color"]["SCENERY"]["BACKGROUND"]
-		self.keylist = [[pygame.K_a, "a"],[pygame.K_b, "b"],[pygame.K_c, "c"],[pygame.K_d, "d"],[pygame.K_e, "e"],[pygame.K_f, "f"],[pygame.K_g, "g"],[pygame.K_h, "h"],[pygame.K_i, "i"],[pygame.K_j, "j"],[pygame.K_k, "k"],[pygame.K_l, "l"],[pygame.K_m, "m"],[pygame.K_n, "n"],[pygame.K_o, "o"],[pygame.K_p, "p"],[pygame.K_q, "q"],[pygame.K_r, "r"],[pygame.K_s, "s"],[pygame.K_t, "t"],[pygame.K_u, "u"],[pygame.K_v, "v"],[pygame.K_w, "w"],[pygame.K_x, "x"],[pygame.K_y, "y"],[pygame.K_z, "z"],]
+		self.keylist = [[pygame.K_a, "a"],[pygame.K_b, "b"],[pygame.K_c, "c"],[pygame.K_d, "d"],[pygame.K_e, "e"],[pygame.K_f, "f"],[pygame.K_g, "g"],[pygame.K_h, "h"],[pygame.K_i, "i"],[pygame.K_j, "j"],[pygame.K_k, "k"],[pygame.K_l, "l"],[pygame.K_m, "m"],[pygame.K_n, "n"],[pygame.K_o, "o"],[pygame.K_p, "p"],[pygame.K_q, "q"],[pygame.K_r, "r"],[pygame.K_s, "s"],[pygame.K_t, "t"],[pygame.K_u, "u"],[pygame.K_v, "v"],[pygame.K_w, "w"],[pygame.K_x, "x"],[pygame.K_y, "y"],[pygame.K_z, "z"]]
 
 	def reset(self):
 		self.mode = "start"
-		self.map = []
+		self.map = 0
 		self.width = 640
 		self.height = 480
 		self.blocklist = []
 		self.arrowlist = []
 		self.in_a_click = False
+		self.message = 0
 		self.time_bomb = 0
 		self.blocks_finished = 0
 		self.win = False
@@ -63,6 +69,7 @@ class General(object):
 		#each block has blockname.forces = [(angle, name),(angle, name) ...]
 		# print("arrowlist ",len(self.arrowlist), "\n\n")
 		any_bad_arrows = False
+		you_win = False
 		for arrow in self.arrowlist:
 			# print("named",arrow.type)
 			for block in self.blocklist:
@@ -94,11 +101,22 @@ class General(object):
 				self.blocks_finished +=1
 			if self.blocks_finished == len(self.blocklist):
 				you_win = True
-		self.time_bomb = 45
+		self.time_bomb = self.options["timer"]
 		if any_bad_arrows:
 			you_win = False
+			self.no_win_yet = "Bad arrows have been marked."
+		else:
+			if you_win == False:
+				self.no_win_yet = "Not enough arrows.  Keep going."
 		if you_win:
 			self.win = True
+
+	def draw_message(self, lines, rect):
+		pygame.draw.rect(self.screen, self.options["color"]["INTERFACE"]["POPUP_BKGD"], rect)
+		i=0; text_height = 24
+		for line in lines:
+			self.screen.blit(self.raws_write.render(line, True, self.options["color"]["INTERFACE"]["POPUP_TEXT"]), (64,64+(text_height*i)))
+			i+=1
 
 	def draw_words(self, text, pos):
 		self.screen.blit(self.wr.render(text, True, self.white), pos)
@@ -107,6 +125,8 @@ class General(object):
 		pygame.draw.line(self.screen, self.white, (0,63),(640,63))
 		self.draw_words("This is a(n) ____ force.", (0,0))
 		pygame.draw.lines(self.screen, self.options["color"]["INTERFACE"]["CHECKMARK"], False,((600,40),(620,58),(640,0)),5)
+		try: self.draw_words(str(round(math.degrees(self.arrowlist[-1].angle), 1)),(0,64))
+		except IndexError: pass
 		
 		x = 250;y = 0
 		for type in self.force_types:
@@ -121,18 +141,6 @@ class General(object):
 				if len(self.force_types_space) >= len(self.force_types):
 					self.force_types_space_filled = True
 			x += length
-	
-	def blockify(self):
-		data = []
-		for i in self.map[2]: #blocks - each i is a new block (or the blank)
-			try:
-				if i[0] != "b" :#and i[0] != []:
-					data.append(i)
-				else:
-					pass
-			except IndexError:
-				pass
-		return data
 
 	def draw_table(self, a,b,c,d):
 		rect = ((a,b),(c,d)) #a,b for upper left xy, c,d for widthheight
@@ -187,22 +195,6 @@ class General(object):
 			pts.append((data[i], data[i+1]))
 		pygame.draw.lines(self.screen, self.options["color"]["SCENERY"]["ROPE"], 0, pts, 3)
 
-	def draw_map(self): #map is a [ [] [] [] [] [] [] etc] 
-		#this draws the scenery - tables, ramps, pulleys
-		for i in self.map[1]: #parts
-			if i[0] == "TABLE":
-				self.draw_table(int(i[1]), int(i[2]), int(i[3]), int(i[4]))
-			elif i[0] == "RAMP_R":
-				self.draw_ramp_r(int(i[1]), int(i[2]), int(i[3]))
-			elif i[0] == "RAMP_L":
-				self.draw_ramp_l(int(i[1]), int(i[2]), int(i[3]))
-			elif i[0] == "PULLEY":
-				self.draw_pulley(int(i[1]), int(i[2]), int(i[3]))
-			elif i[0] == "ROPE":
-				self.draw_rope(i[1:])
-			elif i[0] == "TEXT":
-				self.draw_words_raws(i[1:])
-
 	def draw_words_raws(self, data):
 		#data is [text, x,y,R,G,B]
 		j = 1
@@ -227,20 +219,36 @@ class General(object):
 		self.draw_words(text, ((self.width - self.wr.size(text)[0])/2,0))
 		x = 10
 		y = 40
-		for map in self.data:
-			big = self.wr.size(map[0])
+		for term in self.maplist:
+			big = self.wr.size(term.name)
 			rect = ((x-5,y-5), (big[0]+10, big[1]+10))
 			pygame.draw.rect(self.screen, self.options["color"]["INTERFACE"]["INTRO_BUTTON_BKGD"], rect, 0)
-			self.draw_words(map[0], (x,y))
+			self.draw_words(term.name, (x,y))
 			if y+40 > self.height:
 				y = 40
 				x = 10 + (self.width/2)
 			else:
 				y+=40
 			if self.do_buttons_once == False:
-				self.home_buttons.append((rect[0],(rect[0][0]+rect[1][0], rect[0][1]+rect[1][1]), map[0]))
+				self.home_buttons.append((rect[0],(rect[0][0]+rect[1][0], rect[0][1]+rect[1][1]), term.name))
 		self.do_buttons_once = True
-
+	
+	def carto_map(self):
+		#go through the map, drawing the parts
+		for i in self.maplist[self.map].partlist: #parts
+			if i[0] == "TABLE":
+				self.draw_table(int(i[1]), int(i[2]), int(i[3]), int(i[4]))
+			elif i[0] == "RAMP_R":
+				self.draw_ramp_r(int(i[1]), int(i[2]), int(i[3]))
+			elif i[0] == "RAMP_L":
+				self.draw_ramp_l(int(i[1]), int(i[2]), int(i[3]))
+			elif i[0] == "PULLEY":
+				self.draw_pulley(int(i[1]), int(i[2]), int(i[3]))
+			elif i[0] == "ROPE":
+				self.draw_rope(i[1:])
+			elif i[0] == "TEXT":
+				self.draw_words_raws(i[1:])	
+		
 class Block(object):
 	"""Block template, to be initialised for each block.  Objects are stored in General's blocklist"""
 	def __init__(self, surface, data):
@@ -250,7 +258,7 @@ class Block(object):
 		self.tilt = 0
 		self.sidelength = 0
 		self.mass = 0
-		self.color = (0,0,0)
+		self.color = (255,255,255)
 		self.forces = []
 		self.force_qty = 0
 		self.arrow_qty = 0
@@ -340,4 +348,44 @@ class Arrow(object):
 		self.headpts.append((midpt[0]+dx, midpt[1]+dy))
 		self.headpts.append((midpt[0]-dx, midpt[1]-dy))
 		#self.headpts has been updated.  No need to return anything.
+class Map(object):
+	"""A new attempt"""
+	def __init__(self):
+		self.partlist = []
+		self.submaps = []
+		self.name = ""
+		self.data_start = 0
+		self.data_stop = 0
 
+	def update(self, c):
+		self.partlist = self.submaps[c].partlist
+		self.data_start = self.submaps[c].data_start
+		self.data_stop = self.submaps[c].data_stop
+
+class Message(object):
+	def __init__(self, text):
+		self.lines = []
+		text = text + " "; wordlist = []; i=0; text_height = 24; width = 160; lines = []; lengths = []; rounds = len(text); j=0
+		self.sizing = pygame.font.Font(None, text_height)
+		while i < rounds:
+			if text[i:i+1] == " ":
+				wordlist.append(text[j:i]); j=i+1
+			i+=1
+		if len(wordlist) == 0: wordlist.append(text)
+		for word in wordlist:
+			lengths.append(self.sizing.size(word)[0])
+		this_line = ""; runner = 0
+		for l in lengths:
+			if (runner + l + 1) < width:
+				runner += l+1
+				this_line = this_line + " " + wordlist[lengths.index(l)]
+			else:
+				runner = 0
+				lines.append(this_line)
+				this_line = ""
+				runner += l+1
+				this_line = this_line + " " + wordlist[lengths.index(l)]
+		lines.append(this_line)
+		
+		self.lines = lines
+		self.rect = ((60,60),(width+8,text_height*len(lines) + 8))

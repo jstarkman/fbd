@@ -9,6 +9,75 @@ pygame.display.set_icon(pygame.image.load("icon.bmp"))
 g.window = pygame.display.set_mode((g.width, g.height))
 g.screen = pygame.display.get_surface()
 
+def cartographer(): #in form of tuples, but no other splits
+	now_in = ""
+	i = 0
+	for tag in g.data:
+		#g.maplist is where they should live
+		if tag[0] == "MAP":
+			if now_in == "submap":
+				g.maplist[-1].submaps[-1].data_stop = i
+
+			paper = classes.Map() #fill w/ data later
+			g.maplist.append(paper)
+			g.maplist[-1].name = tag[1]
+			g.maplist[-1].data_start = i
+			now_in = "map"
+		elif tag[0] == "SUBMAP":
+			if now_in == "submap":
+				g.maplist[-1].submaps[-1].data_stop = i
+		
+			paper = classes.Map() #fill w/ data later
+			g.maplist[-1].submaps.append(paper)
+			g.maplist[-1].submaps[-1].data_start = i
+			now_in = "submap"
+		elif tag[0] in g.furnishings:
+			if now_in == "map":
+				g.maplist[-1].partlist.append(tag)
+			elif now_in == "submap":
+				g.maplist[-1].submaps[-1].partlist.append(tag)
+
+		else: pass #is a block, or part of one
+		i+=1
+	#endings
+	i = 0
+	for term in g.maplist:
+		try:
+			term.data_stop = g.maplist[i+1].data_start
+		except IndexError:
+			term.data_stop = len(g.data)
+		i+=1
+
+def clicked_it(which):
+	i=0
+	for layout in g.maplist:
+		if layout.name == which: #correct map chosen
+			if layout.name == "Random":
+				g.map = random.randint(1,len(g.maplist)-1)
+			else:
+				g.map = i
+			if g.maplist[g.map].submaps != []:
+				g.maplist[g.map].update(random.randint(0,len(g.maplist[g.map].submaps)-1))
+			break
+		i+=1
+	g.mode = "mech"
+
+	i = g.maplist[g.map].data_start; in_block = False; start_block = 0; end_block = 0;	
+	#block inst time
+	for tag in g.data[g.maplist[g.map].data_start:g.maplist[g.map].data_stop]: #start w/ map tag
+		if tag[0] == "BLOCK":
+			if in_block == True:
+				in_block = False
+				end_block = i
+				holder = classes.Block(g.screen, g.data[start_block:end_block])
+				g.blocklist.append(holder)
+			start_block = i
+			in_block = True
+		i+=1
+	holder = classes.Block(g.screen, g.data[start_block:g.maplist[g.map].data_stop])
+	g.blocklist.append(holder)
+
+		
 def I(events):
 	for event in events:
 		if event.type == pygame.QUIT:
@@ -46,18 +115,7 @@ def I(events):
 				for button in g.home_buttons:
 					if x > button[0][0] and x < button[1][0]:
 						if y > button[0][1] and y < button[1][1]:
-							#clicked it
-							for i in g.data:
-								if i[0] == button[2]:
-									if i[0] == "Random": g.map = random.choice(g.data[1:])
-									else: g.map = i
-									break
-							g.mode = "mech"
-							#inst blocks from their class
-							block_data = g.blockify()
-							for i in block_data:
-								holder = classes.Block(g.screen, i)
-								g.blocklist.append(holder)
+							clicked_it(button[2]);
 
 		elif event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_DELETE:
@@ -71,7 +129,11 @@ def I(events):
 				elif g.mode == "start":
 					sys.exit()
 			elif event.key == pygame.K_RETURN:
-				g.check()
+				if g.message == 0:
+					g.check()
+				else:
+					g.message = 0
+				
 			else: #letter pressed
 				for i in g.keylist:
 					if event.key == i[0]:
@@ -79,37 +141,57 @@ def I(events):
 						except KeyError: pass
 
 
+def boom():
+	if g.win == False:
+		size = len(g.arrowlist)
+		i=0
+		while i < size:
+			try:
+				arrow = g.arrowlist[i]
+				if arrow.good == False:
+					#find it and kill it
+					del g.arrowlist[i]
+					print("Bad!")
+				else:
+					i+=1
+			except IndexError:
+				break
+	else:
+		print("Winner! \n")
+		g.reset() #purge
+
 
 def draw():
 	g.screen.fill(g.black)
 	if g.mode == "start":
 		g.draw_home()
 	elif g.mode == "mech":
-		g.draw_map()
+		g.carto_map()
 		g.draw_interface()
 		g.draw_blocks()
 		g.draw_arrows()
-		
+	if g.message != 0:
+		g.draw_message(g.message.lines,g.message.rect)
 	pygame.display.flip()
 
 
 def main():
+	cartographer();
 	while True:
 		I(pygame.event.get());
+
 		if g.time_bomb !=0:
-			if g.time_bomb == 1: #BOOM!
-				if g.win == False:
-					for arrow in g.arrowlist:
-						if arrow.good == False:
-							#find it and kill it
-							del g.arrowlist[g.arrowlist.index(arrow)]
-							print("Bad!")
-				else:
-					print("Winner! \n")
-					g.reset() #purge
-					
-			g.time_bomb -= 1
-		draw()
-		g.clock.tick(30)
-main()
-pygame.quit()
+			if g.time_bomb == 1:
+				boom();
+			elif g.time_bomb == g.options["timer"]:
+				if g.win:
+					g.message = classes.Message("You have won. Good for you!")
+				elif g.no_win_yet != "":
+					g.message = classes.Message(g.no_win_yet)
+			g.time_bomb -= 1		
+		draw();
+		g.clock.tick(30);
+
+main();
+pygame.quit();
+sys.exit();

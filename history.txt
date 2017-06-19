@@ -27,3 +27,12 @@ fbd_v1 is done! at 13:00, 25hrs gone, 25 to go
 added a Random button
 fixed the issue with rotation
 new map (back-to-back ramps)
+v1.2 saved, held separate
+time to renovate entire internal structure for maps
+
+29 may
+finished the renovation
+allowed submaps - will pick one at random
+added messaging/popups with wordwrap
+fixed the won't-remove-certain-red-arrows bug
+added the arrow angle show-er (upper-left corner)
