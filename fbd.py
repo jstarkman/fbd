@@ -53,7 +53,7 @@ def clicked_it(which):
 	for layout in g.maplist:
 		if layout.name == which: #correct map chosen
 			if layout.name == "Random":
-				g.map = random.randint(1,len(g.maplist)-1)
+				g.map = random.randint(2,len(g.maplist)-1)
 			else:
 				g.map = i
 			if g.maplist[g.map].submaps != []:
@@ -85,10 +85,10 @@ def I(events):
 			
 		elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 			if g.mode == "mech":
-				g.in_a_click = True
 				if event.pos[1] < 64:
 					g.interfacing_now = True
 				else:
+					g.in_a_click = True
 					newbie = classes.Arrow(g.screen, event.pos)
 					newbie.color = g.options["color"]["ARROW"]["NEW"]
 					g.arrowlist.append(newbie)
@@ -151,13 +151,13 @@ def boom():
 				if arrow.good == False:
 					#find it and kill it
 					del g.arrowlist[i]
-					print("Bad!")
+					# print("Bad!")
 				else:
 					i+=1
 			except IndexError:
 				break
 	else:
-		print("Winner! \n")
+		# print("Winner! \n")
 		g.reset() #purge
 
 

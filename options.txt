@@ -38,4 +38,4 @@ format - keybinding:forcename
 [/KEYBINDINGS]
 
 [TOLERANCE:10] (10) degrees off each side tolerated, resulting in a (20) deg arc
-[TIMER:45] number of frames to wait.  30 fps.  timer:(45) means 1 1/2 sec.
+[TIMER:30] (30) number of frames to wait.  FBD runs at 30 FPS.

@@ -54,7 +54,7 @@ class General(object):
 
 	def label_arrow(self, receipt):
 		try:
-			print(receipt, "at an angle of", round(math.degrees(self.arrowlist[-1].angle), 1))
+			# print(receipt, "at an angle of", round(math.degrees(self.arrowlist[-1].angle), 1))
 			self.arrowlist[-1].type = receipt
 			self.arrowlist[-1].color = self.options["color"]["ARROW"]["SET"]
 		except IndexError: pass
@@ -125,8 +125,11 @@ class General(object):
 		pygame.draw.line(self.screen, self.white, (0,63),(640,63))
 		self.draw_words("This is a(n) ____ force.", (0,0))
 		pygame.draw.lines(self.screen, self.options["color"]["INTERFACE"]["CHECKMARK"], False,((600,40),(620,58),(640,0)),5)
-		try: self.draw_words(str(round(math.degrees(self.arrowlist[-1].angle), 1)),(0,64))
-		except IndexError: pass
+		try: self.draw_words(str(round(math.degrees(self.arrowlist[-1].angle), 1))+"\u00B0",(0,64))
+		except IndexError: pass	
+		
+		which = self.maplist[self.map].name
+		self.draw_words(which, (self.width - self.wr.size(which)[0],64))
 		
 		x = self.wr.size("This is a(n) ____ force.")[0] + 6;y = 0
 		for type in self.force_types:
@@ -179,8 +182,8 @@ class General(object):
 		
 		pygame.draw.polygon(self.screen, self.white, point_list)
 		
-	def draw_pulley(self, x, y, radius):
-		pygame.draw.circle(self.screen, self.white, (x,y), radius)
+	def draw_pulley(self, x, y, radius, color):
+		pygame.draw.circle(self.screen, color, (x,y), radius)
 	
 	def draw_rope(self, data): #data is [] of stringy ints
 		j=0
@@ -206,7 +209,8 @@ class General(object):
 	def draw_blocks(self):
 		#draws all of the blocks.  Loops.
 		for brick in self.blocklist:
-			pygame.draw.polygon(self.screen, brick.color, brick.pointlist)
+			if brick.visible:
+				pygame.draw.polygon(self.screen, brick.color, brick.pointlist)
 	
 	def draw_arrows(self):
 		for bolt in self.arrowlist:
@@ -243,7 +247,10 @@ class General(object):
 			elif i[0] == "RAMP_L":
 				self.draw_ramp_l(int(i[1]), int(i[2]), int(i[3]))
 			elif i[0] == "PULLEY":
-				self.draw_pulley(int(i[1]), int(i[2]), int(i[3]))
+				if len(i) == 4:
+					self.draw_pulley(int(i[1]), int(i[2]), int(i[3]), self.white)
+				else:
+					self.draw_pulley(int(i[1]), int(i[2]), int(i[3]), (int(i[4]), int(i[5]), int(i[6])))
 			elif i[0] == "ROPE":
 				self.draw_rope(i[1:])
 			elif i[0] == "TEXT":
@@ -264,6 +271,7 @@ class Block(object):
 		self.arrow_qty = 0
 		self.pointlist = []
 		self.finished = False
+		self.visible = True
 
 		for i in data: #eg [size, 50, 25]
 			if i[0] == "SIZE":
@@ -277,6 +285,8 @@ class Block(object):
 				self.tilt = int(i[3])
 			elif i[0] == "COLOR":
 				self.color = (int(i[1]), int(i[2]), int(i[3]))
+			elif i[0] == "HIDE":
+				self.visible = False
 		self.force_qty = len(self.forces)
 
 		half = int(self.sidelength/2)
@@ -375,21 +385,15 @@ class Message(object):
 		
 		for word in wordlist:
 			lengths.append(self.sizing.size(word)[0])
-		
-		print(wordlist, "with sizes of", lengths)
 
 		for l in lengths:
-			if (runner + l + 3) < width:
-				runner += (l+3)
-				this_line = this_line + " " + wordlist[lengths.index(l)]
-			else:
+			if (runner + l + 3) > width:
 				runner = 0
 				self.lines.append(this_line)
 				this_line = ""
-				runner += (l+3)
-				this_line = this_line + " " + wordlist[lengths.index(l)]
+			runner += (l+3)
+			this_line = this_line + " " + wordlist[lengths.index(l)]
 		self.lines.append(this_line)
-		
-		print(self.lines)
-		
 		self.rect = ((60,60),(width+8,text_height*len(self.lines) + 8))
+
+
