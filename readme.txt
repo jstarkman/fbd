@@ -1,7 +1,7 @@
 Free Body Diagram practice program
 
 /*
- * THIS COPY MADE ON 2013-05-31 AND PRESERVED AS FINAL
+ * THIS COPY MADE ON 2013-06-03 AND PRESERVED AS FINAL
  * Notes on this version:
  * - It works.
  * - It exists for distribution and history
@@ -9,16 +9,10 @@ Free Body Diagram practice program
  * - Minor changes to accomodate for how cx_freeze works.  Ordinary running of code has no change in results.
  * 	- This means little
  *
- * Bugs that were finally put to rest: arrows and click-and-drag on the interface
- * New features: local forces (see yo-yo for example) (implemented by invisible blocks); instructions map; map title displayed in-sim; degree sign.
- * 
- * Size estimate: 21-22kb of code, 10kb of non-media other (data, this file, options).
- * In lines: 400/classes.py ; 196/fbd.py ; 101/read.py ; 25/setup.py
- * Total: 722
- * 	- However, there are well-spaced parts, obfuscated parts, and all of pygame itself, so this is not a good measure
- * Actual amount typed is more, due to deletion.
- * This text was added after building the .exe, and is not part of that total.
+ * This is an emergency bugfix of a feature that was never tested.  It has to do with the intro screen and too many maps.
+ * Special features - more maps!
  */
+
 
 Notes on drawing:
 	Computers number pixels like cells in Excel (R) - positive on the x-axis is right, while positive on the y is down.

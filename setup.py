@@ -16,7 +16,7 @@ excludes = []
 packages = []
 
 setup(
-	version = "1.3", 
+	version = "1.6", 
 	description = "FBD practice",
 	author = "James Starkman",
 	name = "FBD",

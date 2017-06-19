@@ -222,17 +222,17 @@ class General(object):
 		text = "Free Body Diagrams practice"
 		self.draw_words(text, ((self.width - self.wr.size(text)[0])/2,0))
 		x = 10
-		y = 40
+		y = 0
 		for term in self.maplist:
-			big = self.wr.size(term.name)
-			rect = ((x-5,y-5), (big[0]+10, big[1]+10))
-			pygame.draw.rect(self.screen, self.options["color"]["INTERFACE"]["INTRO_BUTTON_BKGD"], rect, 0)
-			self.draw_words(term.name, (x,y))
-			if y+40 > self.height:
+			if y+40 >= self.height:
 				y = 40
 				x = 10 + (self.width/2)
 			else:
 				y+=40
+			big = self.wr.size(term.name)
+			rect = ((x-5,y-5), (big[0]+10, big[1]+10))
+			pygame.draw.rect(self.screen, self.options["color"]["INTERFACE"]["INTRO_BUTTON_BKGD"], rect, 0)
+			self.draw_words(term.name, (x,y))
 			if self.do_buttons_once == False:
 				self.home_buttons.append((rect[0],(rect[0][0]+rect[1][0], rect[0][1]+rect[1][1]), term.name))
 		self.do_buttons_once = True

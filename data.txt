@@ -233,7 +233,101 @@ capitalise all tag names (e.g. TABLE), no force types (e.g. normal), and whateve
 		[FORCE:gravitational:270]
 		[POS:320:400:0]
 		[HIDE]
-		
 
+[MAP:Block and tackle (simple)] a gun tackle (M.A. = 2)
+	for students who want a "real world" example...
+	[ROPE:320:185:295:285:350:300:350:150:300:130:0:430] main rope
+
+	[TEXT:A simple gun tackle.:0:100:255:255:255]
+	[TEXT:Mechanical advantag of 2.:0:125:255:255:255]
+	[TEXT:All pulleys real/non-ideal.:0:150:255:255:255]
+	[TEXT:Have fun!:0:175:255:255:255]
+	[PULLEY:320:150:30] upper one
+	[TABLE:310:115:20:70] block
+	[ROPE:320:115:320:64] to ceiling
+
+	[PULLEY:320:300:30] lower one
+	[ROPE:320:300:320:400] to load
+
+	[BLOCK] load
+		[SIZE:40:16]
+		[FORCE:tensional:90]
+		[FORCE:gravitational:270]
+		[POS:320:400:0]
+		[COLOR:0:255:128]
+
+	[BLOCK] upper pulley
+		[SIZE:20:1]
+		[FORCE:tensional:90]
+		[FORCE:gravitational:270]
+		[POS:320:150:0]
+		[HIDE]
+	[BLOCK] upper pulley - right cable
+		[SIZE:10:1]
+		[FORCE:tensional:270]
+		[POS:350:150:0]
+		[HIDE]
+	[BLOCK] upper pulley - left cable
+		[SIZE:10:1]
+		[FORCE:tensional:225]
+		[POS:290:140:0]
+		[HIDE]
+	[BLOCK] upper pulley - lower cable
+		[SIZE:10:1]
+		[FORCE:tensional:255] empirical
+		[POS:320:185:0]
+		[HIDE]
+
+	[BLOCK] lower pulley
+		[SIZE:20:1]
+		[FORCE:tensional:270]
+		[FORCE:gravitational:270]
+		[POS:320:300:0]
+		[HIDE]
+	[BLOCK] lower pulley - right cable
+		[SIZE:10:1]
+		[FORCE:tensional:90]
+		[POS:350:300:0]
+		[HIDE]
+	[BLOCK] lower pulley - left cable
+		[SIZE:10:1]
+		[FORCE:tensional:77] empirical
+		[POS:290:300:0]
+		[HIDE]
+
+
+[MAP:Earth and sun] scaled sizes, not dist.
+	[PULLEY:160:300:200:255:192:0] Sol
+	[PULLEY:480:300:2:0:0:255] Terra
+	[TEXT:Sizes scaled, if not distance:400:100:255:255:255]
+	[TEXT:Diameter of Sun is about 100x that of Earth:285:125:255:255:255]
+
+	[BLOCK] sol
+		[SIZE:100:1]
+		[FORCE:gravitational:0]
+		[POS:160:300:0]
+		[HIDE]
+	[BLOCK] earth
+		[SIZE:5:1]
+		[FORCE:gravitational:180]
+		[POS:480:300:0]
+		[HIDE]
+
+[MAP:The Wheel]
+	[PULLEY:320:240:75]
+	[TABLE:0:315:640:165]
+	[TEXT:Travelling -->:0:100:255:255:255]
+
+	[BLOCK] main
+		[SIZE:50:1]
+		[FORCE:gravitational:270]
+		[POS:320:240:0]
+		[HIDE]
+	[BLOCK] ground
+		[SIZE:10:1]
+		[FORCE:normal:90]
+		[FORCE:frictional:180]
+		[POS:320:315:0]
+		[HIDE]
 
 please follow the correct syntax
