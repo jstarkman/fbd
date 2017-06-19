@@ -1,12 +1,12 @@
 #FBDs
 import pygame, sys, math, classes, random
+import pygame._view
 pygame.init()
 
 g = classes.General() #warning, large amount of __init__ to do
 g.clock = pygame.time.Clock()
 pygame.display.set_caption("FBD practice")
-pygame.display.set_icon(pygame.image.load("icon.bmp"))
-g.window = pygame.display.set_mode((g.width, g.height))
+#pygame.display.set_icon(pygame.image.load("icon.bmp").convert())
 g.screen = pygame.display.get_surface()
 
 def cartographer(): #in form of tuples, but no other splits
@@ -194,4 +194,3 @@ def main():
 
 main();
 pygame.quit();
-sys.exit();

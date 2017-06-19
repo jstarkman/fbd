@@ -17,8 +17,8 @@ class General(object):
 		self.maplist = []
 		self.furnishings = ["TABLE", "RAMP_R", "RAMP_L", "PULLEY", "ROPE", "TEXT", "RANDOM"]
 		self.valid_block_tags = ["SIZE","FORCE","POS","COLOR"]
-		self.wr = pygame.font.Font(None, 32)
-		self.raws_write = pygame.font.Font(None, 24)
+		self.wr = pygame.font.Font("freesansbold.ttf", 24)
+		self.raws_write = pygame.font.Font("freesansbold.ttf", 16)
 		self.message = 0
 		self.in_a_click = False
 		self.force_types = self.options["forces"]
@@ -107,13 +107,13 @@ class General(object):
 			self.no_win_yet = "Bad arrows have been marked."
 		else:
 			if you_win == False:
-				self.no_win_yet = "Not enough arrows.  Keep going."
+				self.no_win_yet = "Not enough arrows. Keep going."
 		if you_win:
 			self.win = True
 
 	def draw_message(self, lines, rect):
-		pygame.draw.rect(self.screen, self.options["color"]["INTERFACE"]["POPUP_BKGD"], rect)
-		i=0; text_height = 24
+		pygame.draw.rect(self.screen, self.options["color"]["INTERFACE"]["POPUP_BKGD"], rect, 0)
+		i=0; text_height = 16
 		for line in lines:
 			self.screen.blit(self.raws_write.render(line, True, self.options["color"]["INTERFACE"]["POPUP_TEXT"]), (64,64+(text_height*i)))
 			i+=1
@@ -128,11 +128,11 @@ class General(object):
 		try: self.draw_words(str(round(math.degrees(self.arrowlist[-1].angle), 1)),(0,64))
 		except IndexError: pass
 		
-		x = 250;y = 0
+		x = self.wr.size("This is a(n) ____ force.")[0] + 6;y = 0
 		for type in self.force_types:
 			size = self.wr.size(type)
 			length = size[0] + 10
-			if x+length > 560:
+			if x+length > 600:
 				x = 0; y = 32
 			self.draw_words(type, (x,y))
 			pygame.draw.rect(self.screen,self.options["color"]["INTERFACE"]["BORDERS"],((x,y),size),1)
@@ -365,27 +365,31 @@ class Map(object):
 class Message(object):
 	def __init__(self, text):
 		self.lines = []
-		text = text + " "; wordlist = []; i=0; text_height = 24; width = 160; lines = []; lengths = []; rounds = len(text); j=0
-		self.sizing = pygame.font.Font(None, text_height)
+		text = text + " "; wordlist = []; i=0; text_height = 16; width = 160; lengths = []; rounds = len(text); j=0; this_line = ""; runner = 0;
+		self.sizing = pygame.font.Font("freesansbold.ttf", 16)
 		while i < rounds:
 			if text[i:i+1] == " ":
 				wordlist.append(text[j:i]); j=i+1
 			i+=1
 		if len(wordlist) == 0: wordlist.append(text)
+		
 		for word in wordlist:
 			lengths.append(self.sizing.size(word)[0])
-		this_line = ""; runner = 0
+		
+		print(wordlist, "with sizes of", lengths)
+
 		for l in lengths:
-			if (runner + l + 1) < width:
-				runner += l+1
+			if (runner + l + 3) < width:
+				runner += (l+3)
 				this_line = this_line + " " + wordlist[lengths.index(l)]
 			else:
 				runner = 0
-				lines.append(this_line)
+				self.lines.append(this_line)
 				this_line = ""
-				runner += l+1
+				runner += (l+3)
 				this_line = this_line + " " + wordlist[lengths.index(l)]
-		lines.append(this_line)
+		self.lines.append(this_line)
 		
-		self.lines = lines
-		self.rect = ((60,60),(width+8,text_height*len(lines) + 8))
+		print(self.lines)
+		
+		self.rect = ((60,60),(width+8,text_height*len(self.lines) + 8))

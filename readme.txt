@@ -1,18 +1,25 @@
 Free Body Diagram practice program
 
-
 /*
- * THIS COPY MADE ON 2013-05-29 AND PRESRVED AS HISTORY.  
+ * THIS COPY MADE ON 2013-05-30 AND PRESERVED AS HISTORY
  * Notes on this version:
  * - It works.
- * - It exists mostly as a backup.
- * - Numerous bugs are dead, including: undying red arrows, faulty win condition
- * - New submaps
- * - New message box, with word wrap and colors in options.txt
+ * - It exists for distribution and history
+ * - The .exe and .msi have been made (w/ cx_freeze)
+ * - Minor changes to accomodate for how cx_freeze works.  Ordinary running of code has no change in results.
+ * 	- This means little
  *
- * Size estimate: 20-21kb of code, 10kb of other (e.g., data, options, this file, etc).
+ * Size estimate: 21kb of code, 105kb of other (e.g., freesansbold.ttf, data, this file, icon.ico, etc).
+ * In lines: 395/classes.py ; 196/fbd.py ; 101/read.py ; 25/setup.py
+ * Total: 717
+ * 	- However, there are well-spaced parts, obfuscated parts, and all of pygame itself, so this is not a good measure
+ * 	- Resulting .msi is 4.5MB, if it helps
  * Actual amount typed is more, due to deletion.
+ * This text was added after building the .exe and the .msi, and is not part of that total.
  */
+
+Notes on using the program: (show to newbies)
+	Click and drag to make an arrow.  Then click the correct type (from the menu) after releasing the arrow.  You can also hit the bound key (see options.txt for bindings) to select the type.  Repeat as needed until you think that all of the forces present are represented.  Then either press Enter or click the checkmark to check whether the forces are correct.  To dismiss the popup, press Enter.  Any bad arrows will be cleared; any good, kept.  When all of the needed arrows are present, the screen will exit to the homescreen.
 
 
 Notes on drawing:
@@ -42,8 +49,5 @@ Notes on the data file, "data.txt":
 
 	Anything not in square brackets is a comment.  Do not use the open square bracket ("[") in your comments.  It tells the parser that a new tag is here, and will confuse it terribly.
 	To temporarily remove a tag, replace the [] with () or {}.  The parser will then treat it like a comment, because it is.
-
 	The map tags (e.g., pulley, table) defined above do not do anything; they merely make images.  As such, they can be used to draw - indeed, in the code, that is all they do.  
 
-Notes on using the program:
-	Click and drag to make an arrow.  Then click the correct type (from the menu) after releasing the arrow.  You can also hit the bound key (see options.txt for bindings) to select the type.  Repeat as needed until you think that all of the forces present are represented.  Then either press Enter or click the checkmark to check whether the forces are correct.  To dismiss the popup, press Enter.  Any bad arrows will be cleared; any good, kept.  When all of the needed arrows are present, the screen will exit to the homescreen.
