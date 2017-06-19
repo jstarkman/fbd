@@ -36,3 +36,12 @@ allowed submaps - will pick one at random
 added messaging/popups with wordwrap
 fixed the won't-remove-certain-red-arrows bug
 added the arrow angle show-er (upper-left corner)
+
+30 may
+had cx_freeze build an executable (easy-to-dist. form)
+fixed font and icon issues
+43.5 hrs in - have a working .exe for use
+no special fast version for macs (.app)
+
+3 june
+bugfix and more maps.  Fixed bug is related to more maps
